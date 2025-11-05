@@ -1,4 +1,4 @@
-from ..models import AccountActiveModel, ResetPasswordModel
+from ..models import ResetPasswordModel
 from ..dataclasses import AccessTokenSchema
 from .interfaces import SerializerInterface
 from typing import Union
@@ -7,7 +7,7 @@ from typing import Union
 class TokenSerializer(SerializerInterface):
     def serialize(
         self,
-        token_data: Union[AccountActiveModel, ResetPasswordModel, AccessTokenSchema],
+        token_data: Union[ResetPasswordModel],
         id_is_null: bool = False,
         access_token_is_null: bool = False,
         token_is_null: bool = False,
@@ -19,7 +19,7 @@ class TokenSerializer(SerializerInterface):
         data = {}
         if not created_at_is_null:
             data["created_at"] = token_data.created_at
-        if isinstance(token_data, (AccountActiveModel, ResetPasswordModel)):
+        if isinstance(token_data, (ResetPasswordModel)):
             if not id_is_null:
                 data["id"] = str(token_data.id) if token_data.id else None
             if not token_is_null:

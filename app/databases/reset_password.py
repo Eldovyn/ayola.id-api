@@ -1,12 +1,12 @@
 from .database import Database
-from ..models import ResetPasswordModel, UserModel
+from ..models import ResetPasswordModel, UsersModel
 from datetime import timezone
 
 
 class ResetPasswordDatabase(Database):
     @staticmethod
     async def insert(email, token_web, token_email, expired_at):
-        if data_user := UserModel.objects(email=email.lower()).first():
+        if data_user := UsersModel.objects(email=email.lower()).first():
             if data_account_active := ResetPasswordModel.objects(
                 user=data_user
             ).first():
@@ -59,7 +59,7 @@ class ResetPasswordDatabase(Database):
         new_password = kwargs.get("new_password")
         created_at = kwargs.get("created_at")
         if category == "user_password_by_token_email":
-            if user_data := UserModel.objects(id=user_id).first():
+            if user_data := UsersModel.objects(id=user_id).first():
                 if data_account_active := ResetPasswordModel.objects(
                     user=user_data
                 ).first():

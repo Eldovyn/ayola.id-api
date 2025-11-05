@@ -1,15 +1,10 @@
-from ..databases import UserDatabase, AccountActiveDatabase
+from ..databases import UserDatabase
 from flask import jsonify, url_for
 import requests
 from ..utils import (
-    TokenAccountActive,
-    SendEmail,
     AuthJwt,
     Validation,
-    generate_otp,
 )
-import datetime
-from ..config import web_short_me
 from ..serializers import UserSerializer, TokenSerializer
 from ..dataclasses import AccessTokenSchema
 
@@ -125,45 +120,11 @@ class RegisterController:
                     result_password,
                 )
                 user_me = self.user_seliazer.serialize(user_data)
-                expired_at = timestamp + datetime.timedelta(minutes=5)
-                token = await TokenAccountActive.insert(f"{user_data.id}", timestamp)
-                otp = generate_otp(4)
-                token_account_active = await AccountActiveDatabase.insert(
-                    email, token, otp, expired_at
-                )
-                SendEmail.send_email(
-                    "Verification Your Account",
-                    [user_data.email],
-                    f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Active</title>
-</head>
-<body>
-    <p>Hello {user_data.username},</p>
-    <p>Someone has requested a link to verify your account, and you can do this through the link below.</p>
-    <p>your otp is {otp}.</p>
-    <p>
-        <a href="{web_short_me}account-active?token={token}">
-            Click here to activate your account
-        </a>
-    </p>
-    <p>If you didn't request this, please ignore this email.</p>
-</body>
-</html>
-                """,
-                )
-                token_data = self.token_serializer.serialize(
-                    token_account_active, token_is_null=True
-                )
             return (
                 jsonify(
                     {
                         "message": "user registered successfully",
                         "data": user_me,
-                        "token": token_data,
                     }
                 ),
                 201,

@@ -1,5 +1,5 @@
 import datetime
-from ..models import AccountActiveModel, ResetPasswordModel, OtpEmailModel
+from ..models import ResetPasswordModel
 from celery.schedules import crontab
 
 
@@ -9,9 +9,7 @@ def register_tasks(celery_app):
         now = datetime.datetime.now(datetime.timezone.utc)
 
         for model, name in [
-            (AccountActiveModel, "account active"),
             (ResetPasswordModel, "reset password"),
-            (OtpEmailModel, "otp email"),
         ]:
             for data in model.objects.all():
                 data_expired_at = getattr(data, "expired_at", None)

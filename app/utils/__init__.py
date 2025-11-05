@@ -8,4 +8,3 @@ from .email_utils import *
 from .generate_etag import *
 from .validation import *
 from .generate_otp import *
-from .gemini_ai import *

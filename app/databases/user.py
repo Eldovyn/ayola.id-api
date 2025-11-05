@@ -1,5 +1,5 @@
 from .database import Database
-from ..models import UserModel, OtpEmailModel
+from ..models import UsersModel
 
 
 class UserDatabase(Database):
@@ -11,7 +11,7 @@ class UserDatabase(Database):
         email,
         password,
     ):
-        user_data = UserModel(
+        user_data = UsersModel(
             email=email,
             username=username,
             password=password,
@@ -36,7 +36,7 @@ class UserDatabase(Database):
         created_at = kwargs.get("created_at")
         deleted_id = kwargs.get("deleted_id")
         avatar = kwargs.get("avatar")
-        if user_data := UserModel.objects(id=user_id).first():
+        if user_data := UsersModel.objects(id=user_id).first():
             if category == "password":
                 user_data.password = password
                 user_data.updated_at = created_at
@@ -65,8 +65,8 @@ class UserDatabase(Database):
         email = kwargs.get("email")
         user_id = kwargs.get("user_id")
         if category == "by_email":
-            if user_data := UserModel.objects(email=email.lower()).first():
+            if user_data := UsersModel.objects(email=email.lower()).first():
                 return user_data
         if category == "by_user_id":
-            if user_data := UserModel.objects(id=user_id).first():
+            if user_data := UsersModel.objects(id=user_id).first():
                 return user_data

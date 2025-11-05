@@ -3,7 +3,7 @@ from functools import wraps
 from flask import request, jsonify
 from ..utils import AuthJwt
 import datetime
-from ..models import UserModel, BlacklistTokenModel
+from ..models import UsersModel
 
 
 def jwt_required():
@@ -36,7 +36,7 @@ def jwt_required():
             if not user_id:
                 return jsonify({"message": "invalid or expired token"}), 401
 
-            user = UserModel.objects(id=user_id).first()
+            user = UsersModel.objects(id=user_id).first()
             if not user:
                 return jsonify({"message": "invalid or expired token"}), 401
 
@@ -48,10 +48,6 @@ def jwt_required():
 
             SKEW = datetime.timedelta(seconds=60)
             if ua and (issued_time + SKEW) < ua:
-                return jsonify({"message": "invalid or expired token"}), 401
-
-            jti = payload.get("jti")
-            if jti and BlacklistTokenModel.objects(jti=jti).first():
                 return jsonify({"message": "invalid or expired token"}), 401
 
             if not user.is_active:

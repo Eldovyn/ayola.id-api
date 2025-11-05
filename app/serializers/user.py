@@ -1,11 +1,11 @@
-from ..models import UserModel
+from ..models import UsersModel
 from .interfaces import SerializerInterface
 
 
 class UserSerializer(SerializerInterface):
     def serialize(
         self,
-        user: UserModel,
+        user: UsersModel,
         id_is_null: bool = False,
         email_is_null: bool = False,
         avatar_is_null: bool = False,
